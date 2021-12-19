@@ -1,6 +1,6 @@
 #!/bin/bash
 #Author: v-filip
-#Wordpress one click install
+#Wordpress simple install
 
 echo "Welcome to the Wordpress one click installer. First of all, please fill the details below since they're needed to complete the installation."
 
