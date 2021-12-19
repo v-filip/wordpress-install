@@ -17,11 +17,15 @@ apt update -y && apt upgrade -y
 
 #Installs the web server, database server and a database client 
 
-apt install apache2 -y 
+apt install apache2 -y
 
 apt install mariadb-server -y
 
 apt install mariadb-client -y
+
+#Installs systemctl
+
+apt install systemctl -y
 
 #Starts the MariaDB daemon
 
