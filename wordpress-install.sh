@@ -82,5 +82,41 @@ mysql -e 'grant all privileges on wordpress.* to "username"@"%";' --user=root --
 
 echo "Done! Enter the host's IP address into your browser of choice and complete the wordpress setup! Good luck!"
 echo "NOTE: There is no need to change any details on the second page of the setup since user's called username and password is password"
+echo "----------"
+echo "Would you like to generate a free SSL cert so your website can support HTTPS? (Enter 1 to proceed): "
+echo "----------"
+echo "NOTE: First of all, please ensure that you've completed the inital wordpress setup. Once you're able to login, you may answer this."
+echo "----------"
+read ANSWER
 
+if [ $ANSWER -eq "1" ] 
+then
+	echo "Please enter your email address: "
+	read EMAILADDR
 
+	echo "Please enter your domain name (ex. www.testdomain.com or testdomain.com): "
+	read DOMAINNAME
+	#Installing certobot which is needed to obtain a LetsEncrypt SSL certificate
+	apt install certbot -y
+
+	sleep 1
+	#Installing a module that integrates with apache2 web server
+	apt install python3-certbot-apache -y 
+
+	sleep 1
+
+	echo "Please go to your domain provider and poit an A record to your server's IP address."
+	echo "----------"
+	echo "Once done, wait a minute or two for the record to propagate."
+	echo "----------"
+	echo "Additionally, please go to Wordpress > Settings > General > Add your domain name to wordpress address and site address fields. "
+	echo "----------"
+	echo "Press enter/return to continue"
+	read USELESVAR
+
+	#Generating the certificate and confirguring apache to use it
+	certbot -d $DOMAINNAME -m $EMAILADDR --apache --agree-tos --non-interactive --redirect
+
+else
+	echo "No worries, ssl cert can always be generated and added later on!"
+fi
