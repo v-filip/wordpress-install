@@ -14,8 +14,6 @@ NOTE: There is no need to change the details on the second page of the setup sin
 
 Enjoy!
 
-20.12.2021 update: Adding the ability to generate SSL/TLS cert in order to force Wordpress to use HTTPS. Cert is completely free of charge. Thanks LetsEncrypt ;)
-
 Tested on: Debian 10 and Ubuntu 20.04
 
 If you're behind a firewall, make sure to expose incoming port 80 and 443 should you choose to use HTTPS.
