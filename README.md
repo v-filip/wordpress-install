@@ -6,7 +6,7 @@ It doesn't matter where you're hosting your VPS instance, with this script you c
 
 To get the script, just copy and paste this simple one liner into your CLI. 
 
-     $ wget https://bit.ly/3FovxnC -O wordpress-install.sh && bash wordpress-install.sh
+     wget https://bit.ly/3FovxnC -O wordpress-install.sh && bash wordpress-install.sh
 
 Done, once script finishes, you need enter your the server's IP address to a browser of your choice and complete the wordpress setup.
 
