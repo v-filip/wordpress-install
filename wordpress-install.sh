@@ -2,21 +2,30 @@
 #Author: v-filip
 #Wordpress simple install
 
+function install_wordpress () {
+
 echo "Welcome to the Wordpress one click installer. First of all, please fill the details below since they're needed to complete the installation."
+
+echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
 
 echo "IMPORTANT: Please ensure that this script is ran by root!"
 
+echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
 echo "What's your (system/OS) root password?: "
+
 read ROOTPASSWD
 
+echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
 echo "Please create a password for the root of the database: "
+
 read DBROOTPASSWD
 
 #Updates the package list and upgrades all the packages on the system
 apt update -y && apt upgrade -y
 
 #Installs the web server, database server and a database client 
-
 apt install apache2 -y
 
 apt install mariadb-server -y
@@ -24,11 +33,9 @@ apt install mariadb-server -y
 apt install mariadb-client -y
 
 #Installs systemctl
-
 apt install systemctl -y
 
 #Starts the MariaDB daemon
-
 systemctl start mariadb
 
 #Imporves the security of MariaDB
@@ -81,42 +88,97 @@ mysql -e 'create user "username"@"%" identified by "password";' --user=root --pa
 mysql -e 'grant all privileges on wordpress.* to "username"@"%";' --user=root --password=${DBROOTPASSWD}
 
 echo "Done! Enter the host's IP address into your browser of choice and complete the wordpress setup! Good luck!"
-echo "NOTE: There is no need to change any details on the second page of the setup since user's called username and password is password"
-echo "----------"
-echo "Would you like to generate a free SSL cert so your website can support HTTPS? (Enter 1 to proceed): "
-echo "----------"
-echo "NOTE: First of all, please ensure that you've completed the inital wordpress setup. Once you're able to login, you may answer this."
-echo "----------"
-read ANSWER
 
-if [ $ANSWER -eq "1" ] 
-then
+echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
+echo "NOTE: There is no need to change any details on the second page of the setup since user's called username and password is password"
+
+echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
+echo "To install an SSL/TLS cert to enable HTTPS on your website, please run the script again and choose the option 2."
+
+echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
+}
+
+function install_ssl_cert () {
+
 	echo "Please enter your email address: "
+
 	read EMAILADDR
 
 	echo "Please enter your domain name (ex. www.testdomain.com or testdomain.com): "
+
 	read DOMAINNAME
+
 	#Installing certobot which is needed to obtain a LetsEncrypt SSL certificate
 	apt install certbot -y
 
-	sleep 1
 	#Installing a module that integrates with apache2 web server
 	apt install python3-certbot-apache -y 
 
-	sleep 1
-
 	echo "Please go to your domain provider and poit an A record to your server's IP address."
-	echo "----------"
+
+	echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
 	echo "Once done, wait a minute or two for the record to propagate."
-	echo "----------"
+
+	echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
 	echo "Additionally, please go to Wordpress > Settings > General > Add your domain name to wordpress address and site address fields. "
-	echo "----------"
+
+	echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
 	echo "Press enter/return to continue"
+
 	read USELESVAR
 
 	#Generating the certificate and confirguring apache to use it
 	certbot -d $DOMAINNAME -m $EMAILADDR --apache --agree-tos --non-interactive --redirect
 
-else
-	echo "No worries, ssl cert can always be generated and added later on!"
-fi
+}
+
+
+
+while true
+
+do
+	echo "Welcome to wordpress-install.sh script, please make a selection!"
+
+	echo
+
+	echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
+
+	echo "(1) Begin the wordpress installation"
+
+	echo "(2) Configure my wordpress so it can use HTTPS (LetsEncrypt SSL/TLS cert generation)"
+
+	echo "(3) Exit"
+
+	echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
+read ANSWER
+
+	case $ANSWER in 
+
+		1)
+			install_wordpress
+			break
+			;;
+		2)
+			install_ssl_cert
+			break
+			;;
+		3)
+			echo "Thank you for using wordpress-install! Goodbye!"
+			break	
+			;;
+		*)	
+			echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+			echo "Invalid input, please use one of the provided selections (Example. 1)!"
+			echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+			;;
+	esac
+
+done
